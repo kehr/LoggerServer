@@ -9,8 +9,7 @@ https://github.com/pypa/sampleproject
 @Filename: setup.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-15T18:23:16+08:00
-@Last modified by:   wangkaixuan
-@Last modified time: 2017-11-15T21:47:49+08:00
+@Last modified time: 2017-11-15T22:32:48+08:00
 @License: Apache License <http://www.apache.org/licenses/>
 """
 
