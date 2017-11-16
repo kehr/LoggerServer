@@ -6,8 +6,8 @@
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-16T10:56:10+08:00
 @Last modified by:   Kehr
-@Last modified time: 2017-11-16T11:35:28+08:00
-@License: Apache License <http://www.apache.org/licenses/>
+@Last modified time: 2017-11-16T12:00:13+08:00
+@License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import logging
 import logging.handlers

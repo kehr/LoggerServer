@@ -9,8 +9,8 @@ https://github.com/pypa/sampleproject
 @Filename: setup.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-15T18:23:16+08:00
-@Last modified time: 2017-11-16T11:44:18+08:00
-@License: Apache License <http://www.apache.org/licenses/>
+@Last modified time: 2017-11-16T12:54:21+08:00
+@License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 
 # Always prefer setuptools over distutils
@@ -22,7 +22,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'doc/index.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -44,7 +44,7 @@ setup(
     author_email='kehr.china@gmail.com',
 
     # Choose your license
-    license='Apache License 2.0',
+    license='Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0>',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -59,7 +59,7 @@ setup(
         'Topic :: Software Development :: Build Tools',
 
         # Pick your license as you wish (should match "license" above)
-        'License :: OSI Approved :: Apache License 2.0',
+        'License :: OSI Approved :: Apache Software License',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.

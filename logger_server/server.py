@@ -5,8 +5,8 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-15T22:33:10+08:00
-@License: Apache License <http://www.apache.org/licenses/>
+@Last modified time: 2017-11-16T12:00:27+08:00
+@License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
 import socket

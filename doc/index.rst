@@ -7,7 +7,7 @@ which serve for `logging.handlers.SocketHandler <https://docs.python.org/2/libra
 More information, see `logging-cookbook <https://docs.python.org/3/howto/logging-cookbook.html>`_.
 
 Usage
-======
+=====
 
 1. Install
 ----------
@@ -65,7 +65,7 @@ Output::
     > LoggerServer is binding on 0.0.0.0:9000
 
 3. Hello word
--------------------------
+-------------
 
 After start `logger-server`, now you can write your logging code, like below:
 

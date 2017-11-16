@@ -5,8 +5,8 @@
 @Filename: conf.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-15T19:22:45+08:00
-@Last modified time: 2017-11-15T22:34:40+08:00
-@License: Apache License <http://www.apache.org/licenses/>
+@Last modified time: 2017-11-16T12:55:11+08:00
+@License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
 import sys

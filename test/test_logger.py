@@ -5,8 +5,8 @@
 @Filename: test_logger.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T20:06:48+08:00
-@Last modified time: 2017-11-15T22:33:04+08:00
-@License: Apache License <http://www.apache.org/licenses/>
+@Last modified time: 2017-11-16T12:00:35+08:00
+@License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import unittest
 import logging
