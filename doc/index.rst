@@ -4,7 +4,7 @@ LoggerServer Documentation
 :doc:`logger_server.server` is an async TCP logging server base on `tornado.ioloop <http://www.tornadoweb.org/en/stable/ioloop.html>`_,
 which serve for `logging.handlers.SocketHandler <https://docs.python.org/2/library/logging.handlers.html?highlight=sockethandler#sockethandler>`_.
 
-More information, see `logging-cookbook. <https://docs.python.org/3/howto/logging-cookbook.html>`_.
+More information, see `logging-cookbook <https://docs.python.org/3/howto/logging-cookbook.html>`_.
 
 Usage
 ======
@@ -109,6 +109,8 @@ Output::
     [E 2017-11-16 11:13:19.703068 127.0.0.1 default_logger root_logger:34] The default logger is working!
     [C 2017-11-16 11:13:19.703124 127.0.0.1 default_logger root_logger:35] The default logger is working!
 
+Get this example code `root_logger.py <https://github.com/kehr/LoggerServer/blob/master/example/root_logger.py>`_.
+
 **Example2** use custom logger::
 
     import logging
@@ -134,6 +136,8 @@ Output::
     [W 2017-11-16 11:19:48.625658 127.0.0.1 test custom_logger:24] The test logger is working!
     [E 2017-11-16 11:19:48.625739 127.0.0.1 test custom_logger:25] The test logger is working!
     [C 2017-11-16 11:19:48.625821 127.0.0.1 test custom_logger:26] The test logger is working!
+
+Get this example code `custom_logger.py <https://github.com/kehr/LoggerServer/blob/master/example/custom_logger.py>`_.
 
 Module
 ======
