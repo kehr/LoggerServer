@@ -9,7 +9,7 @@ https://github.com/pypa/sampleproject
 @Filename: setup.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-15T18:23:16+08:00
-@Last modified time: 2017-11-15T22:32:48+08:00
+@Last modified time: 2017-11-16T11:44:18+08:00
 @License: Apache License <http://www.apache.org/licenses/>
 """
 
@@ -22,7 +22,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'doc/index.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
