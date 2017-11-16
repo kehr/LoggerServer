@@ -5,7 +5,7 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-16T12:59:39+08:00
+@Last modified time: 2017-11-16T13:57:40+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
@@ -32,7 +32,17 @@ DEFAULT_LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(ip)s %(name)s %(module)s:%
 
 
 class AttrDict(dict):
-    """Attribute dict"""
+    """Attribute dict
+
+    Make ``dict`` value can be accessed by attribute::
+
+        from logger_server import AttrDict
+
+        people = AttrDict({'name':'Joe', 'age': 23})
+        print people.name
+        print people.age
+
+    """
     def __setattr__(self, key, value):
         self[key] = value
 
@@ -41,22 +51,35 @@ class AttrDict(dict):
 
 
 class LoggerFormatter(LogFormatter):
-    """LoggerFormatter"""
+    """format """
     def formatTime(self, record, datefmt=None):
-        """Rewrite default `formatTime` to support `%f`"""
+        """Rewrite default `formatTime` to support `%f`
+
+        :arg logging.LogRecord record:  ``logging.LogRecord`` object which
+            Contains all the information pertinent to the event being logged.
+        :arg datefmt:  Datetime format string.
+        """
         ct = datetime.datetime.fromtimestamp(record.created)
         datefmt = DEFAULT_DATE_FORMAT if not datefmt else datefmt
         return ct.strftime(datefmt)
 
 
 class LoggerStreamHandler(TCPServer):
-    """Stream"""
+    """A stream handler for TCP connection.
+
+    Reference: `tornado.tcpserver.TCPServer <http://www.tornadoweb.org/en/stable/tcpserver.html#tornado.tcpserver.TCPServer>`_
+    """
     def __init__(self, *args, **kwargs):
         super(LoggerStreamHandler, self).__init__(*args, **kwargs)
         self.logger = logging.getLogger('LoggerServer')
 
     @gen.coroutine
     def handle_stream(self, stream, address):
+        """Reslove Socket stream data.
+
+        :arg stream: scoket stream
+        :arg tuple address: client resquest ip and port ``(ip, port)``
+        """
         self.request_ip, self.request_port = address
         while True:
             try:
@@ -73,7 +96,17 @@ class LoggerStreamHandler(TCPServer):
             self.handleLogRecord(logging.makeLogRecord(data), address)
 
     def handleLogRecord(self, record, address):
-        """handleLogRecord"""
+        """Config the decoded `record`
+
+        This will add ``ip`` and ``port`` param by ``logging.Filter``. You can
+        add them into logging format::
+
+            [%(levelname)1.1s %(asctime)s %(ip)s %(port)s %(name)s %(module)s:%(lineno)d] %(message)s
+
+        :arg logging.LogRecord record:  ``logging.LogRecord`` object which
+            Contains all the information pertinent to the event being logged.
+        :arg tuple address: client resquest ip and port `(ip, port)`
+        """
         class ContextFilter(logging.Filter):
             """为日志增加额外信息"""
             def filter(self, record):
@@ -85,10 +118,10 @@ class LoggerStreamHandler(TCPServer):
 
 
 class LoggerServer(object):
-    """A logging server serve for `logging.handlers.SocketHandler`"""
+    """A logging server serve for ``logging.handlers.SocketHandler``"""
     def __init__(self):
         self.options = AttrDict()
-        self._init_config_options()
+        self.init_config_options()
         self._init_logger()
         self.ioloop = tornado.ioloop.IOLoop.current()
 
@@ -111,10 +144,10 @@ class LoggerServer(object):
         channel.setFormatter(LoggerFormatter(fmt=self.options.fmt, datefmt=self.options.datefmt, color=False))
         logger.addHandler(channel)
 
-    def _init_config_options(self):
-        """Initialize config `self.options`.
+    def init_config_options(self):
+        """Initialize `logger-server` config.
 
-        Merge command config and file config.
+        All settings will be merged in ``self.options``
         """
         command = self._parse_command()
         self.options.update(command.__dict__)
