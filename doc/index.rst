@@ -64,6 +64,11 @@ Output::
 
     > LoggerServer is binding on 0.0.0.0:9000
 
+.. note::
+
+    ``logger-server`` bind on port `9000` by default. if this port is not avalible, use param `-p` specify a new port.
+    
+
 3. Hello word
 -------------
 
