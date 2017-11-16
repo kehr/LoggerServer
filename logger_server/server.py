@@ -5,10 +5,11 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-16T14:50:51+08:00
+@Last modified time: 2017-11-16T19:18:24+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
+import sys
 import socket
 import pickle
 import struct
@@ -25,7 +26,7 @@ from tornado.log import LogFormatter
 from tornado.tcpserver import TCPServer
 from tornado.iostream import StreamClosedError
 
-version = __version__ = '1.0.2'
+version = __version__ = '1.0.3'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 DEFAULT_LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(ip)s %(name)s %(module)s:%(lineno)d] %(message)s'
@@ -118,10 +119,13 @@ class LoggerStreamHandler(TCPServer):
 
 
 class LoggerServer(object):
-    """A logging server serve for ``logging.handlers.SocketHandler``"""
-    def __init__(self):
+    """A logging server serve for ``logging.handlers.SocketHandler``
+
+    :arg argparse.Namespace config: The command line parse result.
+    """
+    def __init__(self, config=None):
         self.options = AttrDict()
-        self.init_config_options()
+        self.init_config_options(config)
         self._init_logger()
         self.ioloop = tornado.ioloop.IOLoop.current()
 
@@ -129,9 +133,23 @@ class LoggerServer(object):
         """Start LoggerServer"""
         if self.options.conf:
             print '> Use config: {}'.format(self.options.conf)
-        print '> LoggerServer is binding on 0.0.0.0:{}'.format(self.options.port)
+        print '> LoggerServer is binding on 0.0.0.0:{}, pid:{}'.format(self.options.port, os.getpid())
         LoggerStreamHandler().listen(self.options.port)
         self.ioloop.start()
+
+    def init_config_options(self, config=None):
+        """Initialize `logger-server` config.
+
+        All settings will be merged in ``self.options``
+
+        :arg argparse.Namespace config: The command line parse result.
+        """
+        if config is None:
+            print config
+            config = parse_command()
+        self.options.update(config.__dict__)
+        if config.conf:
+            self.options.update(self._parse_config_file(config.conf))
 
     def _init_logger(self):
         """init global logger"""
@@ -144,57 +162,61 @@ class LoggerServer(object):
         channel.setFormatter(LoggerFormatter(fmt=self.options.fmt, datefmt=self.options.datefmt, color=False))
         logger.addHandler(channel)
 
-    def init_config_options(self):
-        """Initialize `logger-server` config.
-
-        All settings will be merged in ``self.options``
-        """
-        command = self._parse_command()
-        self.options.update(command.__dict__)
-        if command.conf:
-            self.options.update(self._parse_config_file(command.conf))
-
     def _parse_config_file(self, path):
         """Parses the config file at the given path"""
         with open(os.path.abspath(path)) as f:
             return json.load(f, encoding='utf-8')
 
-    def _parse_command(self):
-        """Parses the command args"""
-        p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-            description='LoggerServer help documentation')
-        p.add_argument('-f', '--conf', required=False, default=None,
-                        help='The config file path for LoggerServer.')
+def parse_command():
+    """Parses the command args"""
+    p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='LoggerServer help documentation')
+    p.add_argument('-f', '--conf', required=False, default=None,
+                    help='The config file path for LoggerServer.')
 
-        p.add_argument('-p', '--port', required=False, type=int, default=9000,
-                        help='LoggerServer port.')
+    p.add_argument('-p', '--port', required=False, type=int, default=9000,
+                    help='LoggerServer port.')
 
-        p.add_argument('--log', required=False, default='./logserver.log',
-                        help='The log output file.')
+    p.add_argument('--log', required=False, default='./logserver.log',
+                    help='The log output file.')
 
-        p.add_argument('--when', required=False, default='midnight',
-                        help=('specify the type of TimedRotatingFileHandler interval.'
-                        "other options:('S', 'M', 'H', 'D', 'W0'-'W6')"))
+    p.add_argument('--when', required=False, default='midnight',
+                    help=('specify the type of TimedRotatingFileHandler interval.'
+                    "other options:('S', 'M', 'H', 'D', 'W0'-'W6')"))
 
-        p.add_argument('--interval', required=False, type=int, default=1,
-                        help='The interval value of timed rotating.')
+    p.add_argument('--interval', required=False, type=int, default=1,
+                    help='The interval value of timed rotating.')
 
-        p.add_argument('--backup', required=False, type=int, default=14,
-                        help='Number of log files to keep.')
+    p.add_argument('--backup', required=False, type=int, default=14,
+                    help='Number of log files to keep.')
 
-        p.add_argument('--fmt', required=False, default=DEFAULT_LOG_FORMAT,
-                        help='The log output formatter of logging.')
+    p.add_argument('--fmt', required=False, default=DEFAULT_LOG_FORMAT,
+                    help='The log output formatter of logging.')
 
-        p.add_argument('--datefmt', required=False, default=DEFAULT_DATE_FORMAT,
-                        help='The log output date formatter of logging.')
+    p.add_argument('--datefmt', required=False, default=DEFAULT_DATE_FORMAT,
+                    help='The log output date formatter of logging.')
 
-        return p.parse_args()
+    p.add_argument('--detached', required=False, action='store_true',
+                    help='Running on detached mode.')
+
+    return p.parse_args()
 
 
 def main():
     """LoggerServer Entry"""
-    LoggerServer().start()
+    config = parse_command()
 
+    if config.detached is True:
+        try:
+            if os.fork() > 0:
+                sys.exit(0)
+            os.setsid()
+            os.umask(0)
+        except OSError as e:
+            print 'Create daemon mode failed!'
+            sys.exit(1)
+
+    LoggerServer(config).start()
 
 if __name__ == '__main__':
     main()

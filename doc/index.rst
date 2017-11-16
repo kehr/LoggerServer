@@ -48,9 +48,14 @@ After `logger_server` package installed, you will got a command `logger-server`
                             %(module)s:%(lineno)d] %(message)s)
       --datefmt DATEFMT     The log output date formatter of logging. (default:
                             %Y-%m-%d %H:%M:%S.%f)
+      --detached            Running on detached mode. (default: False)
 
-You can use param `-f` to specify a config file for `logger-server`.
+Use param `-f` to specify a config file for `logger-server`.
 `logserver.conf.template <https://github.com/kehr/LoggerServer/blob/master/logger_server/conf/logserver.conf.template>`_ is a configuration template.
+
+.. versionadded:: 1.0.3
+
+    Use param `--detached` to set `logger-server` runnning as daemon.
 
 .. warning::
 
@@ -67,7 +72,7 @@ Output::
 .. note::
 
     ``logger-server`` bind on port `9000` by default. if this port is not avalible, use param `-p` specify a new port.
-    
+
 
 3. Hello word
 -------------
@@ -155,6 +160,10 @@ Module
 
 Release history
 ===============
+
+Version 1.0.3, Nov 16 2017
+--------------------------
+* Add ``--detached`` param.
 
 Version 1.0.0, Nov 15 2017
 --------------------------
