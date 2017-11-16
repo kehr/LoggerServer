@@ -5,7 +5,7 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-16T12:00:27+08:00
+@Last modified time: 2017-11-16T12:59:39+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
@@ -25,7 +25,7 @@ from tornado.log import LogFormatter
 from tornado.tcpserver import TCPServer
 from tornado.iostream import StreamClosedError
 
-version = __version__ = '1.0.0'
+version = __version__ = '1.0.1'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 DEFAULT_LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(ip)s %(name)s %(module)s:%(lineno)d] %(message)s'

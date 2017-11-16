@@ -9,7 +9,7 @@ https://github.com/pypa/sampleproject
 @Filename: setup.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-15T18:23:16+08:00
-@Last modified time: 2017-11-16T12:54:21+08:00
+@Last modified time: 2017-11-16T13:00:35+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 
@@ -18,6 +18,7 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
+from logger_server import version
 
 here = path.abspath(path.dirname(__file__))
 
@@ -31,7 +32,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0.0',
+    version=version,
 
     description='An async TCP logging server base on tornado.ioloop, which serve for logging.handlers.SocketHandler.',
     long_description=long_description,
