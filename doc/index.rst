@@ -161,6 +161,11 @@ Module
 Release history
 ===============
 
+Version 1.0.4, Nov 16 2017
+--------------------------
+* Add ``--version`` param.
+* Change default port from `9000` to `9876`
+
 Version 1.0.3, Nov 16 2017
 --------------------------
 * Add ``--detached`` param.
