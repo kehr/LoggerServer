@@ -5,7 +5,7 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-20T11:48:22+08:00
+@Last modified time: 2017-11-20T16:19:06+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
@@ -26,7 +26,7 @@ from tornado.log import LogFormatter
 from tornado.tcpserver import TCPServer
 from tornado.iostream import StreamClosedError
 
-version = __version__ = '1.0.4'
+version = __version__ = '1.0.5'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 DEFAULT_LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(ip)s %(name)s %(module)s:%(lineno)d] %(message)s'
@@ -65,14 +65,20 @@ class LoggerFormatter(LogFormatter):
         return ct.strftime(datefmt)
 
 
-class LoggerStreamHandler(TCPServer):
-    """A stream handler for TCP connection.
+class LoggerServer(TCPServer):
+    """A logging server serve for ``logging.handlers.SocketHandler``
+
+    :arg argparse.Namespace config: The command line parse result.
 
     Reference: `tornado.tcpserver.TCPServer <http://www.tornadoweb.org/en/stable/tcpserver.html#tornado.tcpserver.TCPServer>`_
     """
-    def __init__(self, *args, **kwargs):
-        super(LoggerStreamHandler, self).__init__(*args, **kwargs)
+    def __init__(self, config=None, *args, **kwargs):
+        super(LoggerServer, self).__init__(*args, **kwargs)
         self.logger = logging.getLogger('LoggerServer')
+        self.options = AttrDict()
+        self.init_config_options(config)
+        self._init_root_logger()
+        self.ioloop = tornado.ioloop.IOLoop.current()
 
     @gen.coroutine
     def handle_stream(self, stream, address):
@@ -102,10 +108,10 @@ class LoggerStreamHandler(TCPServer):
         This will add ``ip`` and ``port`` param by ``logging.Filter``. You can
         add them into logging format::
 
-            [%(levelname)1.1s %(asctime)s %(ip)s %(port)s %(name)s %(module)s:%(lineno)d] %(message)s
+        [%(levelname)1.1s %(asctime)s %(ip)s %(port)s %(name)s %(module)s:%(lineno)d] %(message)s
 
         :arg logging.LogRecord record:  ``logging.LogRecord`` object which
-            Contains all the information pertinent to the event being logged.
+        Contains all the information pertinent to the event being logged.
         :arg tuple address: client resquest ip and port `(ip, port)`
         """
         class ContextFilter(logging.Filter):
@@ -114,27 +120,25 @@ class LoggerStreamHandler(TCPServer):
                 record.ip, record.port = address
                 return True
         logger = logging.getLogger(record.name)
+
+        if self.options.separated is True:
+            # Add `TimedRotatingFileHandler` for empty `logger.handlers`
+            if len(logger.handlers) == 0:
+                self.add_logger_file_handler(logger, record.name)
+            else:
+                for handler in logger.handlers:
+                    if not isinstance(handler, logging.handlers.TimedRotatingFileHandler):
+                        self.add_logger_file_handler(logger, record.name)
+
         logger.addFilter(ContextFilter())
         logger.handle(record)
-
-
-class LoggerServer(object):
-    """A logging server serve for ``logging.handlers.SocketHandler``
-
-    :arg argparse.Namespace config: The command line parse result.
-    """
-    def __init__(self, config=None):
-        self.options = AttrDict()
-        self.init_config_options(config)
-        self._init_logger()
-        self.ioloop = tornado.ioloop.IOLoop.current()
 
     def start(self):
         """Start LoggerServer"""
         if self.options.conf:
             print '> Use config: {}'.format(self.options.conf)
         print '> LoggerServer is binding on 0.0.0.0:{}, pid:{}'.format(self.options.port, os.getpid())
-        LoggerStreamHandler().listen(self.options.port)
+        self.listen(self.options.port)
         self.ioloop.start()
 
     def init_config_options(self, config=None):
@@ -153,11 +157,26 @@ class LoggerServer(object):
         if config.conf:
             self.options.update(self._parse_config_file(config.conf))
 
-    def _init_logger(self):
+    def _init_root_logger(self):
         """init global logger"""
-        logger = logging.getLogger()
+        if self.options.separated is False:
+            self.add_logger_file_handler()
+
+    def add_logger_file_handler(self, logger=None, name=''):
+        """Add `TimedRotatingFileHandler` for every single logger"""
+        if logger is None:
+            logger = logging.getLogger()
+
+        # Disable propagate
+        logger.propagate = False
+
+        if name and name.strip():
+            filename = '{}.{}.log'.format(self.options.log, name)
+        else:
+            filename = '{}.log'.format(self.options.log)
+
         channel = logging.handlers.TimedRotatingFileHandler(
-                                filename=self.options.log,
+                                filename=filename,
                                 when=self.options.when,
                                 interval=self.options.interval,
                                 backupCount=self.options.backup)
@@ -179,7 +198,7 @@ def parse_command():
     p.add_argument('-p', '--port', required=False, type=int, default=9876,
                     help='LoggerServer port.')
 
-    p.add_argument('--log', required=False, default='./logserver.log',
+    p.add_argument('--log', required=False, default='./logserver',
                     help='The log output file.')
 
     p.add_argument('--when', required=False, default='midnight',
@@ -203,6 +222,9 @@ def parse_command():
 
     p.add_argument('--version', required=False, action='store_true',
                     help='Print version code.')
+
+    p.add_argument('--separated', required=False, action='store_true',
+                    help='Output log into every single file. logger name will in the suffix of every logger file.')
 
     return p.parse_args()
 

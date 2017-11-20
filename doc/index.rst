@@ -49,6 +49,8 @@ After `logger_server` package installed, you will got a command `logger-server`
       --datefmt DATEFMT     The log output date formatter of logging. (default:
                             %Y-%m-%d %H:%M:%S.%f)
       --detached            Running on detached mode. (default: False)
+      --separated           Output log into every single file. logger name will in
+                            the suffix of every logger file. (default: False)
 
 Use param `-f` to specify a config file for `logger-server`.
 `logserver.conf.template <https://github.com/kehr/LoggerServer/blob/master/logger_server/conf/logserver.conf.template>`_ is a configuration template.
@@ -161,7 +163,11 @@ Module
 Release history
 ===============
 
-Version 1.0.4, Nov 16 2017
+Version 1.0.5, Nov 20 2017
+--------------------------
+* Add ``--separated`` param. Output log to every single file.
+
+Version 1.0.4, Nov 20 2017
 --------------------------
 * Add ``--version`` param.
 * Change default port from `9000` to `9876`
