@@ -5,7 +5,7 @@
 @Filename: test_logger.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T20:06:48+08:00
-@Last modified time: 2017-11-16T12:00:35+08:00
+@Last modified time: 2017-11-20T11:45:09+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import unittest
@@ -14,7 +14,7 @@ import logging.handlers
 
 root = logging.getLogger()
 root.setLevel(logging.DEBUG)
-socketHandler = logging.handlers.SocketHandler('localhost', 9000)
+socketHandler = logging.handlers.SocketHandler('localhost', 9876)
 root.addHandler(socketHandler)
 
 class TestLogger(unittest.TestCase):

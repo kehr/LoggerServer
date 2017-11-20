@@ -36,7 +36,7 @@ After `logger_server` package installed, you will got a command `logger-server`
     optional arguments:
       -h, --help            show this help message and exit
       -f CONF, --conf CONF  The config file path for LoggerServer. (default: None)
-      -p PORT, --port PORT  LoggerServer port. (default: 9000)
+      -p PORT, --port PORT  LoggerServer port. (default: 9876)
       --log LOG             The log output file. (default: ./logserver.log)
       --when WHEN           specify the type of TimedRotatingFileHandler
                             interval.other options:('S', 'M', 'H', 'D', 'W0'-'W6')
@@ -67,11 +67,11 @@ Use param `-f` to specify a config file for `logger-server`.
 
 Output::
 
-    > LoggerServer is binding on 0.0.0.0:9000
+    > LoggerServer is binding on 0.0.0.0:9876
 
 .. note::
 
-    ``logger-server`` bind on port `9000` by default. if this port is not avalible, use param `-p` specify a new port.
+    ``logger-server`` bind on port `9876` by default. if this port is not avalible, use param `-p` specify a new port.
 
 
 3. Hello word
@@ -88,7 +88,7 @@ After start `logger-server`, now you can write your logging code, like below:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     # change localhost to your `logger-server` ip
-    socketHandler = logging.handlers.SocketHandler('localhost', 9000)
+    socketHandler = logging.handlers.SocketHandler('localhost', 9876)
     logger.addHandler(socketHandler)
 
     # use root logger
@@ -130,7 +130,7 @@ Get this example code `root_logger.py <https://github.com/kehr/LoggerServer/blob
     logger = logging.getLogger('test')
     logger.setLevel(logging.DEBUG)
     # change localhost to your `logger-server` ip
-    socketHandler = logging.handlers.SocketHandler('localhost', 9000)
+    socketHandler = logging.handlers.SocketHandler('localhost', 9876)
     logger.addHandler(socketHandler)
 
     logger.debug('The test logger is working!')

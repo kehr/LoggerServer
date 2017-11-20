@@ -5,7 +5,7 @@
 @Filename: server.py
 @Author: Kehr <kehr.china@gmail.com>
 @Created Date:   2017-11-14T19:20:37+08:00
-@Last modified time: 2017-11-16T19:18:24+08:00
+@Last modified time: 2017-11-20T11:48:22+08:00
 @License: Apache License <http://www.apache.org/licenses/LICENSE-2.0>
 """
 import os
@@ -26,7 +26,7 @@ from tornado.log import LogFormatter
 from tornado.tcpserver import TCPServer
 from tornado.iostream import StreamClosedError
 
-version = __version__ = '1.0.3'
+version = __version__ = '1.0.4'
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 DEFAULT_LOG_FORMAT = '[%(levelname)1.1s %(asctime)s %(ip)s %(name)s %(module)s:%(lineno)d] %(message)s'
@@ -145,8 +145,10 @@ class LoggerServer(object):
         :arg argparse.Namespace config: The command line parse result.
         """
         if config is None:
-            print config
             config = parse_command()
+        if config.version:
+            print 'version: {}'.format(version)
+            sys.exit(0)
         self.options.update(config.__dict__)
         if config.conf:
             self.options.update(self._parse_config_file(config.conf))
@@ -174,7 +176,7 @@ def parse_command():
     p.add_argument('-f', '--conf', required=False, default=None,
                     help='The config file path for LoggerServer.')
 
-    p.add_argument('-p', '--port', required=False, type=int, default=9000,
+    p.add_argument('-p', '--port', required=False, type=int, default=9876,
                     help='LoggerServer port.')
 
     p.add_argument('--log', required=False, default='./logserver.log',
@@ -198,6 +200,9 @@ def parse_command():
 
     p.add_argument('--detached', required=False, action='store_true',
                     help='Running on detached mode.')
+
+    p.add_argument('--version', required=False, action='store_true',
+                    help='Print version code.')
 
     return p.parse_args()
 
