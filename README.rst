@@ -22,6 +22,16 @@ Reference: `logging cookbook <https://docs.python.org/3/howto/logging-cookbook.h
 ``LoggerServer`` use ``tornado`` build a high-performance TCP logging server to slove this problem.
 
 
+Installl
+-------------
+
+Install `LoggerServer` by `pip`
+
+.. code-block:: shell
+
+    pip install logger_server
+
+
 Documentation
 -------------
 
